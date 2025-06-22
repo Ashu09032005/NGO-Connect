@@ -1,10 +1,19 @@
 const express = require('express');
-const mongoose = require('mongoose'); // ✅ MISSING IMPORT
-const app = express();
+const mongoose = require('mongoose');
+const multer = require('multer');
 const path = require('path');
 const NGO = require('./models/ngo');
+const { storage } = require('./cloudinary/index'); 
+const upload = multer({ storage });
+const methodOverride = require('method-override');
 
-// Serve static files (like CSS, images)
+
+const app = express();
+app.use(methodOverride('_method'));
+// Middleware to parse form data
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set EJS view engine
@@ -21,23 +30,63 @@ mongoose.connect('mongodb://localhost:27017/ngo-connect', {
 
 // Home route
 app.get('/', (req, res) => {
-  res.render('home'); // renders views/home.ejs
+  res.render('home');
 });
 
-// NGO list route
+// Show all NGOs
 app.get('/ngos', async (req, res) => {
   try {
     const ngos = await NGO.find({});
-    res.render('ngos', { ngos }); // renders views/ngo.ejs
+    res.render('ngos', { ngos });
   } catch (err) {
     console.error("Error fetching NGOs:", err);
     res.status(500).send("Internal Server Error");
   }
 });
+// Show form to create new NGO
+app.get('/ngos/new', (req, res) => {
+  res.render('newngo'); // you must have views/newngo.ejs
+});
+// Handle NGO creation with image upload
+app.post('/ngos/new', upload.single('image'), async (req, res) => {
+  try {
+    const imageURL = req.file.path;
+    const { name, description, location, contact, website, createdBy, cause, needs } = req.body;
+
+    const newNGO = new NGO({
+      name,
+      description,
+      location,
+      contact,
+      website,
+      createdBy,
+      cause: cause.split(',').map(c => c.trim()),
+      needs: needs.split(',').map(n => n.trim()),
+      imageURL
+    });
+
+    await newNGO.save();
+    res.redirect(`/ngos/${newNGO._id}`);
+  } catch (err) {
+    console.error("❌ Error saving NGO:", err);
+    res.status(500).send("Error saving NGO.");
+  }
+});
+
+
+// Show NGO details
 app.get('/ngos/:id', async (req, res) => {
   const ngo = await NGO.findById(req.params.id);
   res.render('ngodetail', { ngo });
 });
+app.get('/ngos/:id/edit', async (req, res) => {
+  const ngo = await NGO.findById(req.params.id);
+  res.render('ngoedit', { ngo });
+});
+
+
+
+
 
 // Handle contact form
 app.post('/contact', (req, res) => {
@@ -45,7 +94,6 @@ app.post('/contact', (req, res) => {
   console.log(`Message for ${ngoName}: From ${name} (${email}) => ${message}`);
   res.send('Message sent!');
 });
-
 
 // Start server
 app.listen(3000, () => {

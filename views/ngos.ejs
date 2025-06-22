@@ -1,52 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>NGOs</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      background: #f2f2f2;
     }
+
     h1 {
       text-align: center;
+      margin-bottom: 30px;
     }
+
     .ngo-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
     }
+
     .ngo-card {
-      border: 1px solid #ccc;
-      padding: 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
       margin: 15px;
-      border-radius: 8px;
-      max-width: 400px;
-      box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
     }
+
+    .ngo-card:hover {
+      transform: scale(1.02);
+    }
+
     .ngo-image {
       width: 100%;
-      height: auto;
+      height: 200px;
+      object-fit: cover;
       border-radius: 6px;
     }
+
     .ngo-card h2 {
       margin-top: 10px;
       font-size: 22px;
+      color: #333;
     }
+
     .ngo-card p {
       margin: 6px 0;
+      color: #555;
     }
+
     .ngo-card a {
       text-decoration: none;
       color: #007BFF;
     }
+
     .ngo-card a:hover {
       text-decoration: underline;
     }
+
     .ngo-card form {
-      margin-top: 10px;
+      margin-top: 12px;
     }
+
     .ngo-card button {
       background-color: #28a745;
       color: white;
@@ -55,40 +77,47 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
     .ngo-card button:hover {
       background-color: #218838;
     }
   </style>
 </head>
 <body>
-  <h1>List of NGOs</h1>
+
+  <%- include('partials/navbar') %>
+
+
 
   <div class="ngo-container">
     <% ngos.forEach(ngo => { %>
       <div class="ngo-card">
-        <h2><%= ngo.name %></h2>
         <img class="ngo-image" src="<%= ngo.imageURL %>" alt="NGO Image"
              onerror="this.src='https://placehold.co/400x300?text=No+Image';" />
 
+        <h2><%= ngo.name %></h2>
+
         <p><strong>Location:</strong> <%= ngo.location %></p>
-        <p><strong>Category:</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
-        <p><strong>Description:</strong> <%= ngo.description %></p>
+        <p><strong>Cause:</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
         <p><strong>Needs:</strong> <%= Array.isArray(ngo.needs) ? ngo.needs.join(', ') : ngo.needs %></p>
+        <p><strong>Description:</strong> <%= ngo.description %></p>
         <p><strong>Contact:</strong> <%= ngo.contact %></p>
         <p><strong>Created By:</strong> <%= ngo.createdBy %></p>
 
         <% if (ngo.website && ngo.website.startsWith('http')) { %>
-          <p><a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">Visit Website</a></p>
+          <p><a href="<%= ngo.website %>" target="_blank">Visit Website</a></p>
         <% } else { %>
           <p><em>Website not available</em></p>
         <% } %>
 
-        <!-- Volunteer button form -->
         <form action="/ngos/<%= ngo._id %>" method="get">
           <button type="submit">Volunteer</button>
         </form>
       </div>
     <% }) %>
   </div>
+
+  <%- include('partials/footer') %>
+
 </body>
 </html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit <%= ngo.name %></title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      padding: 40px;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    form label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    form textarea {
+      resize: vertical;
+      height: 120px;
+    }
+
+    form button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    form button:hover {
+      background-color: #218838;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+      <%- include('partials/navbar') %>
+    <h1>Edit NGO</h1>
+
+    <form action="/ngos/<%= ngo._id %>?_method=PUT" method="POST">
+      <label for="name">NGO Name</label>
+      <input type="text" id="name" name="name" value="<%= ngo.name %>" required>
+
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" value="<%= ngo.location %>" required>
+
+      <label for="cause">Causes (comma-separated)</label>
+      <input type="text" id="cause" name="cause" value="<%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %>" required>
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" required><%= ngo.description %></textarea>
+
+      <label for="needs">Needs (comma-separated)</label>
+      <input type="text" id="needs" name="needs" value="<%= Array.isArray(ngo.needs) ? ngo.needs.join(', ') : ngo.needs %>" required>
+
+      <label for="contact">Contact Email</label>
+      <input type="email" id="contact" name="contact" value="<%= ngo.contact %>" required>
+
+      <label for="website">Website (optional)</label>
+      <input type="text" id="website" name="website" value="<%= ngo.website %>">
+
+      <label for="createdBy">Created By</label>
+      <input type="text" id="createdBy" name="createdBy" value="<%= ngo.createdBy %>" required>
+
+      <button type="submit">Update NGO</button>
+    </form>
+  </div>
+
+</body>
+</html>

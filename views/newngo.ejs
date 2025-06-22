@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create New NGO</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      padding: 40px;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    form label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea,
+    form input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    form textarea {
+      resize: vertical;
+      height: 120px;
+    }
+
+    form button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h1>Create New NGO</h1>
+
+    <form action="/ngos/new" method="POST" enctype="multipart/form-data">
+      <label for="name">NGO Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" required>
+
+      <label for="cause">Causes (comma-separated)</label>
+      <input type="text" id="cause" name="cause" placeholder="e.g., Education, Women Empowerment" required>
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" required></textarea>
+
+      <label for="needs">Needs (comma-separated)</label>
+      <input type="text" id="needs" name="needs" placeholder="e.g., Clothes, Books, Volunteers" required>
+
+      <label for="contact">Contact Email</label>
+      <input type="email" id="contact" name="contact" required>
+
+      <label for="website">Website (optional)</label>
+      <input type="text" id="website" name="website">
+
+      <label for="createdBy">Created By</label>
+      <input type="text" id="createdBy" name="createdBy" required>
+
+      <label for="image">NGO Image</label>
+      <input type="file" id="image" name="image" accept="image/*" required>
+      <p class="note">* Upload JPG, PNG, or JPEG image. Max 10MB.</p>
+
+      <button type="submit">Submit NGO</button>
+    </form>
+  </div>
+
+</body>
+</html>
