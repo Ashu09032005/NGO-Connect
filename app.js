@@ -6,12 +6,14 @@ const NGO = require('./models/ngo');
 const { storage } = require('./cloudinary/index'); 
 const upload = multer({ storage });
 const methodOverride = require('method-override');
-
+const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 app.use(methodOverride('_method'));
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
+app.use(expressLayouts);
+app.set('layout', 'layouts/boilerplate');
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -19,7 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set EJS view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+const session = require('express-session');
 
+const passport = require('passport');//authentication to provide access or not
+const LocalStrategy = require('passport-local');
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/ngo-connect', {
   useNewUrlParser: true,
@@ -27,6 +32,21 @@ mongoose.connect('mongodb://localhost:27017/ngo-connect', {
 })
 .then(() => console.log("✅ MongoDB Connected"))
 .catch((err) => console.log("❌ MongoDB Connection Error:", err));
+
+const sessionConfig = {
+
+    name: "session",//used to sign in session cookies
+    secret: 'thisshouldbeabettersecret!',
+    resave: false,//prevents from saving unmodified
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,//7 days
+        maxAge: 1000 * 60 * 60 * 24 * 7//7days
+    }
+}
+
+app.use(session(sessionConfig))
 
 // Home route
 app.get('/', (req, res) => {

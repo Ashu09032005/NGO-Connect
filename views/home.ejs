@@ -1,111 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NGO Connect</title>
-  <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I"
-    crossorigin="anonymous"
-  />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: url('/images/home.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<% var title = "Home" %>
 
-    /* White overlay for readability */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.4); /* Lightens image */
-      z-index: -1;
-    }
+<style>
+  body {
+    background-image: url('/images/home.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    color: white;
+  }
 
-    .cover-container {
-      background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-      backdrop-filter: blur(4px);
-      color: white;
-      padding: 3rem;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      text-shadow: 1px 1px 3px black;
-      min-height: 100vh;
-    }
+  .overlay {
+   
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 
-    h1 {
-      font-size: 3rem;
-      font-weight: bold;
-    }
+  .btn-view {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+  }
+</style>
 
-    p.lead {
-      font-size: 1.3rem;
-      line-height: 1.7;
-      max-width: 800px;
-      margin: 1rem auto;
-    }
-
-    .btn-custom {
-      background-color: #17a2b8;
-      color: white;
-      font-weight: bold;
-      border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 8px;
-      transition: background 0.3s ease;
-    }
-
-    .btn-custom:hover {
-      background-color: #138496;
-    }
-
-    .nav-link {
-      color: #fff !important;
-      font-weight: bold;
-    }
-
-    .nav-link:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-
-<body class="d-flex text-center">
-  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column justify-content-center align-items-center">
-    <header class="mb-auto w-100">
-      <div class="d-flex justify-content-between align-items-center px-4">
-        <h3 class="mb-0">NGO Connect</h3>
-        <nav class="nav nav-masthead justify-content-end">
-          <a class="nav-link active" href="/">Home</a>
-          <a class="nav-link" href="/ngos">Explore NGOs</a>
-        </nav>
-      </div>
-    </header>
-
-    <main class="text-center px-3">
-      <h1>Support NGOs, Change Lives</h1>
-      <p class="lead">
-        NGO Connect is a platform designed to bridge the gap between passionate individuals and impactful non-profit organizations. Users can explore a wide range of verified NGOs working across causes like education, healthcare, environmental conservation, and rural development. Each NGO profile highlights its mission, current needs, and ways people can contribute—be it through donations, volunteering, or spreading awareness. Whether you're looking to make a difference or support a cause close to your heart, NGO Connect makes it easy to take meaningful action.
-      </p>
-      <a href="/ngos" class="btn btn-lg btn-custom">View NGOs</a>
-    </main>
-
-    <footer class="mt-auto text-white-50">
-      <p>&copy; 2025 NGO Connect</p>
-    </footer>
+<div class="overlay text-center">
+  <div>
+    <h1>Welcome to NGO Connect</h1>
+    <p>NGO Connect is a platform designed to bridge the gap between passionate individuals and impactful non-profit organizations. Users can explore a wide range of verified NGOs working across causes like education, healthcare, environmental conservation, and rural development. Each NGO profile highlights its mission, current needs, and ways people can contribute—be it through donations, volunteering, or spreading awareness. Whether you're looking to make a difference or support a cause close to your heart, NGO Connect makes it easy to take meaningful action.
+</p>
+    <a href="/ngos" class="btn btn-primary btn-view">View NGOs</a>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-pjaaA8dDz/FSYpOJb0aG+JyZr6fxo8HcFrll9H57N7/QpPjj+3F4AvhEBXvF5Szj"
-    crossorigin="anonymous"></script>
-</body>
-</html>
+</div>

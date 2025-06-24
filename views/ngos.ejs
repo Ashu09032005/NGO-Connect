@@ -1,123 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>NGOs</title>
-  <link rel="stylesheet" href="/styles.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f2f2f2;
-    }
+<% var title = "Explore NGOs" %>
+<% var active = "ngos" %>
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f2f2f2;
+  }
 
-    .ngo-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
-    .ngo-card {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      padding: 20px;
-      margin: 15px;
-      border-radius: 10px;
-      max-width: 380px;
-      width: 100%;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
+  .ngo-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    .ngo-card:hover {
-      transform: scale(1.02);
-    }
+  .ngo-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 10px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
 
-    .ngo-image {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
+  .ngo-card:hover {
+    transform: scale(1.02);
+  }
 
-    .ngo-card h2 {
-      margin-top: 10px;
-      font-size: 22px;
-      color: #333;
-    }
+  .ngo-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
 
-    .ngo-card p {
-      margin: 6px 0;
-      color: #555;
-    }
+  .ngo-card h2 {
+    margin-top: 10px;
+    font-size: 22px;
+    color: #333;
+  }
 
-    .ngo-card a {
-      text-decoration: none;
-      color: #007BFF;
-    }
+  .ngo-card p {
+    margin: 6px 0;
+    color: #555;
+  }
 
-    .ngo-card a:hover {
-      text-decoration: underline;
-    }
+  .ngo-card a {
+    text-decoration: none;
+    color: #007BFF;
+  }
 
-    .ngo-card form {
-      margin-top: 12px;
-    }
+  .ngo-card a:hover {
+    text-decoration: underline;
+  }
 
-    .ngo-card button {
-      background-color: #28a745;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+  .ngo-card form {
+    margin-top: 12px;
+  }
 
-    .ngo-card button:hover {
-      background-color: #218838;
-    }
-  </style>
-</head>
-<body>
+  .ngo-card button {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
-  <%- include('partials/navbar') %>
+  .ngo-card button:hover {
+    background-color: #218838;
+  }
+</style>
 
 
 
-  <div class="ngo-container">
-    <% ngos.forEach(ngo => { %>
-      <div class="ngo-card">
-        <img class="ngo-image" src="<%= ngo.imageURL %>" alt="NGO Image"
-             onerror="this.src='https://placehold.co/400x300?text=No+Image';" />
+<div class="ngo-container">
+  <% ngos.forEach(ngo => { %>
+    <div class="ngo-card">
+      <img class="ngo-image" src="<%= ngo.imageURL %>" alt="NGO Image"
+           onerror="this.src='https://placehold.co/400x300?text=No+Image';" />
 
-        <h2><%= ngo.name %></h2>
+      <h2><%= ngo.name %></h2>
 
-        <p><strong>Location:</strong> <%= ngo.location %></p>
-        <p><strong>Cause:</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
-        <p><strong>Needs:</strong> <%= Array.isArray(ngo.needs) ? ngo.needs.join(', ') : ngo.needs %></p>
-        <p><strong>Description:</strong> <%= ngo.description %></p>
-        <p><strong>Contact:</strong> <%= ngo.contact %></p>
-        <p><strong>Created By:</strong> <%= ngo.createdBy %></p>
+      <p><strong>Location:</strong> <%= ngo.location %></p>
+      <p><strong>Cause:</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
+      <p><strong>Needs:</strong> <%= Array.isArray(ngo.needs) ? ngo.needs.join(', ') : ngo.needs %></p>
+      <p><strong>Description:</strong> <%= ngo.description %></p>
+      <p><strong>Contact:</strong> <%= ngo.contact %></p>
+      <p><strong>Created By:</strong> <%= ngo.createdBy %></p>
 
-        <% if (ngo.website && ngo.website.startsWith('http')) { %>
-          <p><a href="<%= ngo.website %>" target="_blank">Visit Website</a></p>
-        <% } else { %>
-          <p><em>Website not available</em></p>
-        <% } %>
+      <% if (ngo.website && ngo.website.startsWith('http')) { %>
+        <p><a href="<%= ngo.website %>" target="_blank">Visit Website</a></p>
+      <% } else { %>
+        <p><em>Website not available</em></p>
+      <% } %>
 
-        <form action="/ngos/<%= ngo._id %>" method="get">
-          <button type="submit">Volunteer</button>
-        </form>
-      </div>
-    <% }) %>
-  </div>
-
-  <%- include('partials/footer') %>
-
-</body>
-</html>
+      <form action="/ngos/<%= ngo._id %>" method="get">
+        <button type="submit">Volunteer</button>
+      </form>
+    </div>
+  <% }) %>
+</div>

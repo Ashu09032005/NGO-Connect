@@ -1,181 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title><%= ngo.name %> - Details</title>
-  <link rel="stylesheet" href="/styles.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 30px;
-      background-color: #f9f9f9;
-    }
+<% var title = ngo.name + " - Details" %>
+<% var active = "" %>
 
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    background: linear-gradient(to right, #eef2f3, #ffffff);
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+    gap: 40px;
+  }
+
+  .left, .right {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    padding: 30px;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .left {
+    flex: 2;
+  }
+
+  .right {
+    flex: 1.2;
+  }
+
+  .left img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  h2 {
+    font-size: 22px;
+    margin-top: 25px;
+    color: #444;
+  }
+
+  p {
+    font-size: 15px;
+    margin: 10px 0;
+    color: #555;
+  }
+
+  a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .right h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .right label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+    color: #444;
+  }
+
+  .right input,
+  .right textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+  }
+
+  .right button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .right button:hover {
+    background-color: #0056b3;
+  }
+
+  .needs-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.needs-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.needs-list input[type="checkbox"] {
+  margin: 0;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+
+  @media (max-width: 768px) {
     .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      max-width: 1100px;
-      margin: auto;
-      gap: 30px;
-      align-items: stretch;
-    }
-
-    .left, .right {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      padding: 25px;
-    }
-
-    .left {
-      flex: 2;
-      min-width: 300px;
-    }
-
-    .right {
-      flex: 1.5;
-      min-width: 280px;
-    }
-
-    .left img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-
-    .left h1 {
-      margin-bottom: 10px;
-    }
-
-    .left h2 {
-      margin-top: 20px;
-      color: #444;
-    }
-
-    .left p {
-      margin: 8px 0;
-    }
-
-    .left a {
-      color: #007BFF;
-      text-decoration: none;
-    }
-
-    .left a:hover {
-      text-decoration: underline;
-    }
-
-    .right h2 {
-      margin-bottom: 15px;
-    }
-
-    .right input,
-    .right textarea {
-      width: 100%;
+      flex-direction: column;
       padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
     }
+  }
+</style>
 
-    .right button {
-      padding: 10px 20px;
-      background-color: #007BFF;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+<div class="container">
+  <!-- NGO Details Section -->
+  <div class="left">
+    <h1><%= ngo.name %></h1>
+    <img src="<%= ngo.imageURL %>" alt="NGO Image" onerror="this.src='https://placehold.co/600x400?text=No+Image';" />
 
-    .right button:hover {
-      background-color: #0056b3;
-    }
+    <h2>About the Foundation</h2>
+    <p><strong>Location:</strong> <%= ngo.location %></p>
+    <p><strong>Cause(s):</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
+    <p><strong>Description:</strong> <%= ngo.description %></p>
+    <p><strong>Contact Email:</strong> <%= ngo.contact %></p>
+    <p><strong>Created By:</strong> <%= ngo.createdBy %></p>
 
-    .needs-list {
-      list-style: none;
-      padding-left: 0;
-      margin-bottom: 20px;
-    }
-
-    .needs-list li {
-      margin-bottom: 10px;
-    }
-
-    .needs-list input[type="checkbox"] {
-      margin-right: 10px;
-      transform: scale(1.1);
-      cursor: pointer;
-    }
-
-    label {
-      font-size: 14px;
-      color: #333;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-    }
-  </style>
-</head>
-<body>
- <%- include('partials/navbar') %>
-  <div class="container">
-    <!-- NGO Details Section -->
-    <div class="left">
-      <h1><%= ngo.name %></h1>
-      <img src="<%= ngo.imageURL %>" alt="NGO Image" onerror="this.src='https://placehold.co/600x400?text=No+Image';" />
-       
-
-      <h2>About the Foundation</h2>
-      <p><strong>Location:</strong> <%= ngo.location %></p>
-      <p><strong>Cause(s):</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
-      <p><strong>Description:</strong> <%= ngo.description %></p>
-      <p><strong>Contact Email:</strong> <%= ngo.contact %></p>
-      <p><strong>Created By:</strong> <%= ngo.createdBy %></p>
-
-      <% if (ngo.website && ngo.website.startsWith('http')) { %>
-        <p><a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">Visit Official Website</a></p>
-      <% } else { %>
-        <p><em>No website available</em></p>
-      <% } %>
-    </div>
-
-    <!-- Contact Form Section -->
-    <div class="right">
-      <h2>Contact This NGO</h2>
-      <form action="/contact" method="POST">
-        <input type="hidden" name="ngoName" value="<%= ngo.name %>" />
-
-        <label for="name">Your Name</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Your Email</label>
-        <input type="email" id="email" name="email" required>
-
-        <p><strong>Select the needs you want to help with:</strong></p>
-        <ul class="needs-list">
-          <% ngo.needs.forEach(function(need, index) { %>
-            <li>
-              <label>
-                <input type="checkbox" name="selectedNeeds[]" value="<%= need %>" id="need-<%= index %>">
-                <%= need %>
-              </label>
-            </li>
-          <% }) %>
-        </ul>
-
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="6" required></textarea>
-
-        <button type="submit">Send Message</button>
-      </form>
-    </div>
+    <% if (ngo.website && ngo.website.startsWith('http')) { %>
+      <p><a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">🌐 Visit Official Website</a></p>
+    <% } else { %>
+      <p><em>No website available</em></p>
+    <% } %>
   </div>
 
-</body>
-</html>
+  <!-- Contact Form Section -->
+  <div class="right">
+    <h2>Contact This NGO</h2>
+    <form action="/contact" method="POST">
+      <input type="hidden" name="ngoName" value="<%= ngo.name %>" />
+
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="John Doe" required>
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="john@example.com" required>
+
+      <p><strong>Select the needs you want to help with:</strong></p>
+      <ul class="needs-list">
+        <% ngo.needs.forEach(function(need, index) { %>
+          <li>
+            <input type="checkbox" name="selectedNeeds[]" value="<%= need %>" id="need-<%= index %>">
+            <label for="need-<%= index %>"><%= need %></label>
+          </li>
+        <% }) %>
+      </ul>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="6" placeholder="Write your message..." required></textarea>
+
+      <button type="submit">📨 Send Message</button>
+    </form>
+  </div>
+</div>
