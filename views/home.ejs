@@ -1,5 +1,8 @@
 <% var title = "Home" %>
 
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
   body {
     background-image: url('/images/home.jpg');
@@ -9,29 +12,69 @@
     height: 100vh;
     margin: 0;
     color: white;
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
   }
 
   .overlay {
-   
-    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* dark overlay for contrast */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    padding: 20px;
     flex-direction: column;
   }
 
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 1.4rem;
+    font-weight: 500;
+    max-width: 900px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+  }
+
   .btn-view {
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 1.1rem;
+    padding: 14px 32px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    background-color: #0d6efd;
+    border: none;
+  }
+
+  .btn-view:hover {
+    background-color: #0b5ed7;
+  }
+
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.4rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+    }
   }
 </style>
 
-<div class="overlay text-center">
-  <div>
-    <h1>Welcome to NGO Connect</h1>
-    <p>NGO Connect is a platform designed to bridge the gap between passionate individuals and impactful non-profit organizations. Users can explore a wide range of verified NGOs working across causes like education, healthcare, environmental conservation, and rural development. Each NGO profile highlights its mission, current needs, and ways people can contribute—be it through donations, volunteering, or spreading awareness. Whether you're looking to make a difference or support a cause close to your heart, NGO Connect makes it easy to take meaningful action.
-</p>
-    <a href="/ngos" class="btn btn-primary btn-view">View NGOs</a>
-  </div>
+<div class="overlay">
+  <h1>Welcome to NGO Connect</h1>
+  <p>
+    NGO Connect is a platform designed to bridge the gap between passionate individuals and impactful non-profit organizations.
+    Explore verified NGOs working across causes like education, healthcare, environmental conservation, and rural development.
+    Whether you're looking to volunteer, donate, or raise awareness—NGO Connect makes it easy to take meaningful action.
+  </p>
+  <a href="/ngos" class="btn btn-primary btn-view">View NGOs</a>
 </div>
