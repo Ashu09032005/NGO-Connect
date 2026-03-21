@@ -133,15 +133,13 @@ app.get('/ngos/:id', async (req, res) => {
   try {
     const ngo = await NGO.findById(req.params.id);
 
-    if (!ngo) {
-      return res.send("❌ NGO not found");
-    }
+    console.log("NGO:", ngo); // 🔥 check this in Render logs
 
     res.render('ngodetail', { ngo });
 
   } catch (err) {
-    console.error("❌ NGO DETAIL ERROR:", err);
-    res.status(500).send("Error loading NGO");
+    console.error("❌ ERROR:", err);
+    res.status(500).send(err.message);
   }
 });
 

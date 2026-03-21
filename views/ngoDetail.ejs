@@ -1,4 +1,8 @@
-<% var title = (ngo && ngo.name ? ngo.name : "NGO") + " - Details" %>
+<% if (!ngo) { %>
+  <h2 style="text-align:center;margin-top:50px;">❌ NGO not found</h2>
+<% } else { %>
+
+<% var title = (ngo.name ? ngo.name : "NGO") + " - Details" %>
 <% var active = "" %>
 
 <!-- Bootstrap CSS -->
@@ -41,15 +45,13 @@
 <div class="container my-5">
   <div class="row g-4">
 
-    <% if (ngo) { %>
-
     <!-- NGO Info Section -->
     <div class="col-lg-7">
       <div class="card p-4">
 
         <h2 class="mb-3 text-primary"><%= ngo.name || "No Name" %></h2>
 
-        <!-- ✅ SAFE IMAGE -->
+        <!-- SAFE IMAGE -->
         <img 
           src="<%= ngo.imageURL || 'https://placehold.co/600x400?text=No+Image' %>" 
           class="img-fluid mb-4" 
@@ -74,7 +76,8 @@
 
         <p><strong>👤 Created By:</strong> <%= ngo.createdBy || "Unknown" %></p>
 
-        <% if (ngo.website && ngo.website.startsWith('http')) { %>
+        <!-- SAFE WEBSITE -->
+        <% if (ngo.website && typeof ngo.website === "string" && ngo.website.startsWith('http')) { %>
           <p>
             <a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">
               🌐 Visit Official Website
@@ -107,12 +110,12 @@
             <input type="email" class="form-control" name="email" placeholder="john@example.com" required>
           </div>
 
-          <!-- ✅ SAFE NEEDS LIST -->
+          <!-- SAFE NEEDS -->
           <div class="mb-3">
             <label class="form-label">Select the needs you want to help with:</label>
             <div class="needs-list">
 
-              <% if (ngo.needs && ngo.needs.length > 0) { %>
+              <% if (ngo.needs && Array.isArray(ngo.needs) && ngo.needs.length > 0) { %>
 
                 <% ngo.needs.forEach(function(need, index) { %>
                   <div class="form-check">
@@ -151,13 +154,7 @@
       </div>
     </div>
 
-    <% } else { %>
-
-      <div class="col-12 text-center">
-        <h2>❌ NGO not found</h2>
-      </div>
-
-    <% } %>
-
   </div>
 </div>
+
+<% } %>
