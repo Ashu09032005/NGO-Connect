@@ -135,8 +135,7 @@ app.get('/ngos/:id', async (req, res) => {
 
     console.log("NGO:", ngo); // 🔥 check this in Render logs
 
-    res.render('ngodetail', { ngo });
-
+    res.render('ngoDetail', { ngo });
   } catch (err) {
     console.error("❌ ERROR:", err);
     res.status(500).send(err.message);
