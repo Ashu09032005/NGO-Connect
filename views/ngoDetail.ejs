@@ -1,4 +1,4 @@
-<% var title = ngo.name + " - Details" %>
+<% var title = (ngo && ngo.name ? ngo.name : "NGO") + " - Details" %>
 <% var active = "" %>
 
 <!-- Bootstrap CSS -->
@@ -40,67 +40,124 @@
 
 <div class="container my-5">
   <div class="row g-4">
+
+    <% if (ngo) { %>
+
     <!-- NGO Info Section -->
     <div class="col-lg-7">
       <div class="card p-4">
-        <h2 class="mb-3 text-primary"><%= ngo.name %></h2>
-        <img src="<%= ngo.imageURL %>" class="img-fluid mb-4" alt="NGO Image"
-          onerror="this.src='https://placehold.co/600x400?text=No+Image';">
+
+        <h2 class="mb-3 text-primary"><%= ngo.name || "No Name" %></h2>
+
+        <!-- ✅ SAFE IMAGE -->
+        <img 
+          src="<%= ngo.imageURL || 'https://placehold.co/600x400?text=No+Image' %>" 
+          class="img-fluid mb-4" 
+          alt="NGO Image"
+          onerror="this.src='https://placehold.co/600x400?text=No+Image';"
+        >
 
         <h4>About the Foundation</h4>
-        <p><strong>📍 Location:</strong> <%= ngo.location %></p>
-        <p><strong>🎯 Cause(s):</strong> <%= Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause %></p>
-        <p><strong>📝 Description:</strong> <%= ngo.description %></p>
-        <p><strong>✉️ Contact Email:</strong> <%= ngo.contact %></p>
-        <p><strong>👤 Created By:</strong> <%= ngo.createdBy %></p>
+
+        <p><strong>📍 Location:</strong> <%= ngo.location || "Not specified" %></p>
+
+        <p>
+          <strong>🎯 Cause(s):</strong>
+          <%= ngo.cause 
+              ? (Array.isArray(ngo.cause) ? ngo.cause.join(', ') : ngo.cause) 
+              : "Not specified" %>
+        </p>
+
+        <p><strong>📝 Description:</strong> <%= ngo.description || "No description available" %></p>
+
+        <p><strong>✉️ Contact:</strong> <%= ngo.contact || "Not available" %></p>
+
+        <p><strong>👤 Created By:</strong> <%= ngo.createdBy || "Unknown" %></p>
 
         <% if (ngo.website && ngo.website.startsWith('http')) { %>
-          <p><a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">🌐 Visit Official Website</a></p>
+          <p>
+            <a href="<%= ngo.website %>" target="_blank" rel="noopener noreferrer">
+              🌐 Visit Official Website
+            </a>
+          </p>
         <% } else { %>
           <p><em>No website available</em></p>
         <% } %>
+
       </div>
     </div>
 
     <!-- Contact Form Section -->
     <div class="col-lg-5 form-section">
       <div class="card p-4">
+
         <h4 class="text-primary mb-4">📨 Contact This NGO</h4>
+
         <form action="/contact" method="POST">
+
           <input type="hidden" name="ngoName" value="<%= ngo.name %>" />
 
           <div class="mb-3">
-            <label for="name" class="form-label">Your Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-control" name="name" placeholder="John Doe" required>
           </div>
 
           <div class="mb-3">
-            <label for="email" class="form-label">Your Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+            <label class="form-label">Your Email</label>
+            <input type="email" class="form-control" name="email" placeholder="john@example.com" required>
           </div>
 
+          <!-- ✅ SAFE NEEDS LIST -->
           <div class="mb-3">
             <label class="form-label">Select the needs you want to help with:</label>
             <div class="needs-list">
-              <% ngo.needs.forEach(function(need, index) { %>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="selectedNeeds[]" value="<%= need %>" id="need-<%= index %>">
-                  <label class="form-check-label" for="need-<%= index %>"><%= need %></label>
-                </div>
-              <% }) %>
+
+              <% if (ngo.needs && ngo.needs.length > 0) { %>
+
+                <% ngo.needs.forEach(function(need, index) { %>
+                  <div class="form-check">
+                    <input 
+                      class="form-check-input" 
+                      type="checkbox" 
+                      name="selectedNeeds[]" 
+                      value="<%= need %>" 
+                      id="need-<%= index %>"
+                    >
+                    <label class="form-check-label" for="need-<%= index %>">
+                      <%= need %>
+                    </label>
+                  </div>
+                <% }) %>
+
+              <% } else { %>
+
+                <p>No specific needs listed</p>
+
+              <% } %>
+
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="message" class="form-label">Message</label>
-            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Write your message..." required></textarea>
+            <label class="form-label">Message</label>
+            <textarea class="form-control" name="message" rows="5" placeholder="Write your message..." required></textarea>
           </div>
 
           <div class="d-grid">
             <button type="submit" class="btn btn-primary">Send Message</button>
           </div>
+
         </form>
       </div>
     </div>
+
+    <% } else { %>
+
+      <div class="col-12 text-center">
+        <h2>❌ NGO not found</h2>
+      </div>
+
+    <% } %>
+
   </div>
 </div>
