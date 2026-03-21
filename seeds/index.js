@@ -1,55 +1,48 @@
 const mongoose = require('mongoose');
-const fs = require('fs');
-const NGO = require('../models/ngo.js'); // Your NGO Mongoose model
-const ngos = require('./ngo.js'); // NGOs data
+require('dotenv').config(); // ✅ load env variables
 
-mongoose.connect('mongodb://localhost:27017/ngo-connect', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+const NGO = require('../models/ngo.js');
+const ngos = require('./ngo.js');
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Database connected");
-});
+// ✅ FIX 1: use Atlas DB (NOT localhost)
+mongoose.connect(process.env.DB_URL)
+  .then(() => console.log("✅ Database connected"))
+  .catch(err => console.log("❌ DB Connection Error:", err));
 
 // Seeder function
 const seedDB = async () => {
-  await NGO.deleteMany({});
-  console.log("Old NGOs deleted");
+  try {
+    await NGO.deleteMany({});
+    console.log("🗑 Old NGOs deleted");
 
-  for (let i = 0; i < ngos.length; i++) {
-    const ngoData = ngos[i];
-    console.log(`Processing NGO ${i + 1}:`, ngoData);
+    for (let i = 0; i < ngos.length; i++) {
+      const ngoData = ngos[i];
 
-    const ngo = new NGO({
-      name: ngoData.name,
-      location: ngoData.location,
-      cause: ngoData.cause,
-      category: ngoData.category || ngoData.cause || ['General'],
-      description: ngoData.description,
-      needs: ngoData.needs,
-      imageURL: ngoData.imageURL || 'https://placehold.co/400x300?text=NGO',
-      website: ngoData.website || 'https://example.com',
-      contact: ngoData.contact || '0000000000',
-      createdBy: ngoData.createdBy || 'seed-script'
-    });
+      const ngo = new NGO({
+        name: ngoData.name,
+        location: ngoData.location,
+        cause: ngoData.cause,
+        category: ngoData.category || ngoData.cause || ['General'],
+        description: ngoData.description,
+        needs: ngoData.needs,
+        imageURL: ngoData.imageURL || 'https://placehold.co/400x300?text=NGO',
+        website: ngoData.website || 'https://example.com',
+        contact: ngoData.contact || '0000000000',
+        createdBy: ngoData.createdBy || 'seed-script'
+      });
 
-    console.log('Prepared NGO object:', ngo);
-
-    try {
-      console.log(`Saving NGO: ${ngo.name}`);
       await ngo.save();
-      console.log(`Successfully saved: ${ngo.name}`);
-    } catch (err) {
-      console.error(`❌ Error saving ${ngo.name}:`, err.message);
+      console.log(`✅ Saved: ${ngo.name}`);
     }
+
+    console.log("🌱 All NGOs seeded successfully");
+
+  } catch (err) {
+    console.error("❌ Seeding Error:", err);
   }
 };
 
-// ✅ Correct placement of function call and final log
+// Run seed
 seedDB().then(() => {
-  console.log("✅ All NGOs seeded successfully");
   mongoose.connection.close();
 });

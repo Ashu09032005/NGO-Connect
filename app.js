@@ -1,3 +1,5 @@
+require('dotenv').config(); // ✅ load env
+
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -19,12 +21,14 @@ const upload = multer({ storage });
 
 const app = express();
 
-// ✅ FIX 1: MongoDB connection using ENV
-mongoose.connect(process.env.DB_URL)
-.then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
-// Middleware
+// ================= DATABASE =================
+mongoose.connect(process.env.DB_URL)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log("❌ MongoDB Connection Error:", err));
+
+
+// ================= MIDDLEWARE =================
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -34,39 +38,50 @@ app.set('layout', 'layouts/boilerplate');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Session
+
+// ================= SESSION =================
 app.use(session({
-    name: "session",
-    secret: process.env.SESSION_SECRET || 'secret123',
-    resave: false,
-    saveUninitialized: false,
+  name: "session",
+  secret: process.env.SESSION_SECRET || 'secret123',
+  resave: false,
+  saveUninitialized: false,
 }));
 
-// Passport
+
+// ================= PASSPORT =================
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Global user
+
+// ================= GLOBAL USER =================
 app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
-    next();
+  res.locals.currentUser = req.user;
+  next();
 });
 
-// Auth middleware
+
+// ================= AUTH MIDDLEWARE =================
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    res.redirect('/login');
+  if (req.isAuthenticated()) return next();
+  res.redirect('/login');
 }
 
-// Routes
+
+// ================= ROUTES =================
+
+// Home
 app.get('/', (req, res) => {
   res.render('home');
 });
 
-// ✅ FIX 2: NGOs route safe
+
+// ================= NGO ROUTES =================
+
+// Show all NGOs
 app.get('/ngos', async (req, res) => {
   try {
     const ngos = await NGO.find({});
@@ -77,15 +92,18 @@ app.get('/ngos', async (req, res) => {
   }
 });
 
+
 // New NGO form
 app.get('/ngos/new', isLoggedIn, (req, res) => {
   res.render('newngo');
 });
 
+
 // Create NGO
 app.post('/ngos/new', isLoggedIn, upload.single('image'), async (req, res) => {
   try {
     const imageURL = req.file.path;
+
     const { name, description, location, contact, website, createdBy, cause, needs } = req.body;
 
     const newNGO = new NGO({
@@ -102,24 +120,33 @@ app.post('/ngos/new', isLoggedIn, upload.single('image'), async (req, res) => {
 
     await newNGO.save();
     res.redirect(`/ngos/${newNGO._id}`);
+
   } catch (err) {
     console.error("❌ NGO SAVE ERROR:", err);
     res.status(500).send("Error saving NGO");
   }
 });
 
-// NGO detail
-app.get('/ngos/:id', isLoggedIn, async (req, res) => {
+
+// ✅ FIXED NGO DETAIL ROUTE
+app.get('/ngos/:id', async (req, res) => {
   try {
     const ngo = await NGO.findById(req.params.id);
+
+    if (!ngo) {
+      return res.send("❌ NGO not found");
+    }
+
     res.render('ngodetail', { ngo });
+
   } catch (err) {
-    console.error(err);
-    res.send("Error loading NGO");
+    console.error("❌ NGO DETAIL ERROR:", err);
+    res.status(500).send("Error loading NGO");
   }
 });
 
-// Contact
+
+// ================= CONTACT =================
 app.post('/contact', async (req, res) => {
   try {
     const { name, email, message, ngoName, selectedNeeds } = req.body;
@@ -134,42 +161,59 @@ app.post('/contact', async (req, res) => {
 
     await newContact.save();
     res.send('Message sent!');
+
   } catch (err) {
-    console.error(err);
+    console.error("❌ CONTACT ERROR:", err);
     res.status(500).send("Error saving message");
   }
 });
 
-// Register
+
+// ================= AUTH =================
+
+// Register form
 app.get('/register', (req, res) => {
   res.render('register');
 });
 
+
+// ✅ FIXED REGISTER ROUTE (shows real error)
 app.post('/register', async (req, res) => {
   try {
     const { username, password, email } = req.body;
+
     const user = new User({ username, email });
+
     const registeredUser = await User.register(user, password);
+
     req.login(registeredUser, (err) => {
-      if (err) return next(err);
+      if (err) {
+        console.error("LOGIN ERROR:", err);
+        return res.send(err.message);
+      }
       res.redirect('/ngos');
     });
+
   } catch (e) {
-    console.error(e);
-    res.send('Registration failed');
+    console.error("❌ REGISTER ERROR:", e);
+    res.send(e.message); // 🔥 shows actual issue
   }
 });
 
-// Login
+
+// Login form
 app.get('/login', (req, res) => {
   res.render('login');
 });
 
+
+// Login
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login'
 }), (req, res) => {
   res.redirect('/ngos');
 });
+
 
 // Logout
 app.get('/logout', (req, res, next) => {
@@ -179,8 +223,10 @@ app.get('/logout', (req, res, next) => {
   });
 });
 
-// ✅ FIX 3: PORT for deployment
+
+// ================= SERVER =================
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
