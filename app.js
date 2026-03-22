@@ -1,4 +1,4 @@
-require('dotenv').config(); // ✅ load env
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -67,6 +67,10 @@ app.use((req, res, next) => {
 // ================= AUTH MIDDLEWARE =================
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
+
+  // 🔥 store where user was trying to go
+  req.session.returnTo = req.originalUrl;
+
   res.redirect('/login');
 }
 
@@ -93,16 +97,16 @@ app.get('/ngos', async (req, res) => {
 });
 
 
-// New NGO form
+// New NGO form (protected)
 app.get('/ngos/new', isLoggedIn, (req, res) => {
   res.render('newngo');
 });
 
 
-// Create NGO
+// Create NGO (protected)
 app.post('/ngos/new', isLoggedIn, upload.single('image'), async (req, res) => {
   try {
-    const imageURL = req.file.path;
+    const imageURL = req.file ? req.file.path : "https://placehold.co/400x300";
 
     const { name, description, location, contact, website, createdBy, cause, needs } = req.body;
 
@@ -128,14 +132,17 @@ app.post('/ngos/new', isLoggedIn, upload.single('image'), async (req, res) => {
 });
 
 
-// ✅ FIXED NGO DETAIL ROUTE
-app.get('/ngos/:id', async (req, res) => {
+// ✅ NGO DETAIL (PROTECTED + RETURN BACK AFTER LOGIN)
+app.get('/ngos/:id', isLoggedIn, async (req, res) => {
   try {
     const ngo = await NGO.findById(req.params.id);
 
-    console.log("NGO:", ngo); // 🔥 check this in Render logs
+    if (!ngo) {
+      return res.send("NGO not found");
+    }
 
     res.render('ngoDetail', { ngo });
+
   } catch (err) {
     console.error("❌ ERROR:", err);
     res.status(500).send(err.message);
@@ -143,8 +150,8 @@ app.get('/ngos/:id', async (req, res) => {
 });
 
 
-// ================= CONTACT =================
-app.post('/contact', async (req, res) => {
+// ================= CONTACT (PROTECTED) =================
+app.post('/contact', isLoggedIn, async (req, res) => {
   try {
     const { name, email, message, ngoName, selectedNeeds } = req.body;
 
@@ -174,7 +181,7 @@ app.get('/register', (req, res) => {
 });
 
 
-// ✅ FIXED REGISTER ROUTE (shows real error)
+// Register
 app.post('/register', async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -184,16 +191,17 @@ app.post('/register', async (req, res) => {
     const registeredUser = await User.register(user, password);
 
     req.login(registeredUser, (err) => {
-      if (err) {
-        console.error("LOGIN ERROR:", err);
-        return res.send(err.message);
-      }
-      res.redirect('/ngos');
+      if (err) return res.send(err.message);
+
+      const redirectUrl = req.session.returnTo || '/ngos';
+      delete req.session.returnTo;
+
+      res.redirect(redirectUrl);
     });
 
   } catch (e) {
     console.error("❌ REGISTER ERROR:", e);
-    res.send(e.message); // 🔥 shows actual issue
+    res.send(e.message);
   }
 });
 
@@ -208,7 +216,11 @@ app.get('/login', (req, res) => {
 app.post('/login', passport.authenticate('local', {
   failureRedirect: '/login'
 }), (req, res) => {
-  res.redirect('/ngos');
+
+  const redirectUrl = req.session.returnTo || '/ngos';
+  delete req.session.returnTo;
+
+  res.redirect(redirectUrl);
 });
 
 
